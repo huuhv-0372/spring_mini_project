@@ -1,5 +1,8 @@
 package com.huuhv.mini_project.controller;
 
+import com.huuhv.mini_project.dto.request.CreateEmployeeRequestDTO;
+import com.huuhv.mini_project.dto.response.EmployeeResponseDTO;
+import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.entity.Employee;
 import com.huuhv.mini_project.service.EmployeeService;
 import com.huuhv.mini_project.service.UtilityService;
@@ -7,10 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -52,15 +52,16 @@ public class EmployeeController {
         return "IoC Container đã inject thành công các Bean vào Controller rồi nhé! Hãy kiểm tra console để xem kết quả.";
     }
 
+    // Get all employees
     @GetMapping
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> employees = employeeService.getAllEmployees();
-        return ResponseEntity.ok(employees);
+    public ResponseEntity<List<EmployeeResponseDTO>> getEmployees(@RequestParam(required = false) String keyword) {
+        return ResponseEntity.ok(employeeService.searchEmployees(keyword));
     }
 
+    // Add employee to database
     @PostMapping
-    public ResponseEntity<Employee> addEmployee(Employee employee) {
-        Employee newEmployee = employeeService.addEmployee(employee);
+    public ResponseEntity<EmployeeResponseDTO> addEmployee(@RequestBody CreateEmployeeRequestDTO request) {
+        EmployeeResponseDTO newEmployee = employeeService.addEmployee(request);
         return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 
