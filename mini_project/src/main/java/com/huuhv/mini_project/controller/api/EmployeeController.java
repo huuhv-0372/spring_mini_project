@@ -1,11 +1,11 @@
-package com.huuhv.mini_project.controller;
+package com.huuhv.mini_project.controller.api;
 
 import com.huuhv.mini_project.dto.request.CreateEmployeeRequestDTO;
+import com.huuhv.mini_project.dto.request.UpdateEmployeeRequestDTO;
 import com.huuhv.mini_project.dto.response.EmployeeResponseDTO;
-import com.huuhv.mini_project.entity.Department;
-import com.huuhv.mini_project.entity.Employee;
 import com.huuhv.mini_project.service.EmployeeService;
 import com.huuhv.mini_project.service.UtilityService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
-    // Khai báo các Bean cần từ khóa final
+    // Declaring Beans requires the `final` keyword.
     private final UtilityService utilityService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
@@ -60,9 +60,24 @@ public class EmployeeController {
 
     // Add employee to database
     @PostMapping
-    public ResponseEntity<EmployeeResponseDTO> addEmployee(@RequestBody CreateEmployeeRequestDTO request) {
+    public ResponseEntity<EmployeeResponseDTO> addEmployee(@Valid @RequestBody CreateEmployeeRequestDTO request) {
         EmployeeResponseDTO newEmployee = employeeService.addEmployee(request);
         return new ResponseEntity<>(newEmployee, HttpStatus.CREATED);
     }
 
+    // Update employee to DB
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateEmployeeRequestDTO request) {
+        EmployeeResponseDTO updatedEmployee = employeeService.updateEmployee(id, request);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
+    // Delete employee by id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.noContent().build();
+    }
 }

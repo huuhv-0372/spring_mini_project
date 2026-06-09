@@ -3,16 +3,21 @@ package com.huuhv.mini_project.seeder;
 import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.entity.Employee;
 import com.huuhv.mini_project.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 // This class is intended to seed the database with initial employee data with department_id from departments.id
 @Component
+@RequiredArgsConstructor
+@Order(20)
 public class EmployeeSeeder implements CommandLineRunner {
-    @Autowired
-    private EmployeeRepository employeeRepository;
 
+    private final EmployeeRepository employeeRepository;
+
+    @Override
     public void run(String... args) {
         if (employeeRepository.count() == 0) {
             // Seed data for employees table via saveAll.

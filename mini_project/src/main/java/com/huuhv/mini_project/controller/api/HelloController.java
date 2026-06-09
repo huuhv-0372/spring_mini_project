@@ -1,4 +1,4 @@
-package com.huuhv.mini_project.controller;
+package com.huuhv.mini_project.controller.api;
 
 import com.huuhv.mini_project.service.UtilityService;
 import lombok.RequiredArgsConstructor;

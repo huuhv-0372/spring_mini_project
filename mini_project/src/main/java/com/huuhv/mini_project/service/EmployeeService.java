@@ -1,9 +1,12 @@
 package com.huuhv.mini_project.service;
 
 import com.huuhv.mini_project.dto.request.CreateEmployeeRequestDTO;
+import com.huuhv.mini_project.dto.request.UpdateEmployeeRequestDTO;
 import com.huuhv.mini_project.dto.response.EmployeeResponseDTO;
 import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.entity.Employee;
+import com.huuhv.mini_project.exception.DuplicateResourceException;
+import com.huuhv.mini_project.exception.ResourceNotFoundException;
 import com.huuhv.mini_project.repository.DepartmentRepository;
 import com.huuhv.mini_project.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,11 +53,11 @@ public class EmployeeService {
     public EmployeeResponseDTO addEmployee(CreateEmployeeRequestDTO request) {
         // Find department by id
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new RuntimeException("Department not found with id: " + request.getDepartmentId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
 
         // Check email exists
         if (employeeRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists: " + request.getEmail());
+            throw new DuplicateResourceException("Email already exists: " + request.getEmail());
         }
 
         // Create new employee
@@ -68,5 +71,40 @@ public class EmployeeService {
         Employee newEmployee = employeeRepository.save(employee);
 
         return convertToResponseDTO(newEmployee);
+    }
+
+    // Update employee
+    @Transactional
+    public EmployeeResponseDTO updateEmployee(Long id, UpdateEmployeeRequestDTO request) {
+        // Find employee by id
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+
+        // Find department by id
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
+
+        // Check email exists (exclude current employee)
+        if (employeeRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
+            throw new DuplicateResourceException("Email already exists: " + request.getEmail());
+        }
+
+        existingEmployee.setName(request.getName());
+        existingEmployee.setEmail(request.getEmail());
+        existingEmployee.setDepartment(department);
+
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+        return convertToResponseDTO(updatedEmployee);
+    }
+
+    // Delete employee
+    @Transactional
+    public void deleteEmployee(Long id) {
+        // Find employee by id
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+
+        employeeRepository.delete(existingEmployee);
     }
 }
