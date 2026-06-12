@@ -1,6 +1,8 @@
-package com.huuhv.mini_project.exception;
+package com.huuhv.mini_project.exception.api;
 
 import com.huuhv.mini_project.dto.response.ErrorResponse;
+import com.huuhv.mini_project.exception.DuplicateResourceException;
+import com.huuhv.mini_project.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice // Listen to exceptions thrown by controllers and handle them globally
+@RestControllerAdvice(basePackages = "com.huuhv.mini_project.controller.api", annotations = RestControllerAdvice.class) // Apply JSON handling to API controllers only
 public class GlobalExceptionHandler {
     // Handle 404 Not found
     @ExceptionHandler(ResourceNotFoundException.class)

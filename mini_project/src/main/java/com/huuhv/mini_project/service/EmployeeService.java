@@ -28,6 +28,7 @@ public class EmployeeService {
                 employee.getName(),
                 employee.getEmail(),
                 employee.getDepartment().getId(),
+                employee.getDepartment().getName(),
                 employee.getCreatedAt(),
                 employee.getUpdatedAt()
         );

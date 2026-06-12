@@ -13,6 +13,7 @@ public class EmployeeResponseDTO {
     private String name;
     private String email;
     private Long departmentId;
+    private String departmentName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
