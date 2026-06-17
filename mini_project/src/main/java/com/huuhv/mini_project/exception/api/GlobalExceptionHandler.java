@@ -4,6 +4,7 @@ import com.huuhv.mini_project.dto.response.ErrorResponse;
 import com.huuhv.mini_project.exception.DuplicateResourceException;
 import com.huuhv.mini_project.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice(basePackages = "com.huuhv.mini_project.controller.api", annotations = RestControllerAdvice.class) // Apply JSON handling to API controllers only
 public class GlobalExceptionHandler {
     // Handle 404 Not found
@@ -24,6 +26,7 @@ public class GlobalExceptionHandler {
             .error(HttpStatus.NOT_FOUND.getReasonPhrase())
             .message(ex.getMessage())
             .build();
+        log.error("Resource not found: {}", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
@@ -41,6 +44,7 @@ public class GlobalExceptionHandler {
             .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
             .message(validationErrors)
             .build();
+        log.error("Validation error: {}", validationErrors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -52,6 +56,7 @@ public class GlobalExceptionHandler {
             .error(HttpStatus.CONFLICT.getReasonPhrase())
             .message(ex.getMessage())
             .build();
+        log.error("Resource conflict: {}", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
@@ -64,6 +69,7 @@ public class GlobalExceptionHandler {
             .message(ex.getMessage())
             .path(request.getRequestURI())
             .build();
+        log.error("Unhandled exception occurred at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

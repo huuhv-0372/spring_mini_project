@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: mini-project
+  profiles:
+    active: dev # Đổi thành 'prod' khi đẩy lên server thật
+
+server:
+  port: 8080 # Port mặc định

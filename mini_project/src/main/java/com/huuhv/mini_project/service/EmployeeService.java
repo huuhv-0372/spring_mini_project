@@ -10,11 +10,13 @@ import com.huuhv.mini_project.exception.ResourceNotFoundException;
 import com.huuhv.mini_project.repository.DepartmentRepository;
 import com.huuhv.mini_project.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmployeeService {
@@ -52,12 +54,17 @@ public class EmployeeService {
     // Add new employee
     @Transactional
     public EmployeeResponseDTO addEmployee(CreateEmployeeRequestDTO request) {
+        log.info("Adding new employee: {}", request);
         // Find department by id
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
+                .orElseThrow(() -> {
+                    log.error("Add employee is failed because department not found with id: {}", request.getDepartmentId());
+                    return new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId());
+                });
 
         // Check email exists
         if (employeeRepository.existsByEmail(request.getEmail())) {
+            log.error("Add employee is failed because email already exists: {}", request.getEmail());
             throw new DuplicateResourceException("Email already exists: " + request.getEmail());
         }
 
@@ -70,6 +77,7 @@ public class EmployeeService {
 
         // Save employee to database
         Employee newEmployee = employeeRepository.save(employee);
+        log.info("New employee added successfully: {}", newEmployee);
 
         return convertToResponseDTO(newEmployee);
     }
@@ -77,16 +85,24 @@ public class EmployeeService {
     // Update employee
     @Transactional
     public EmployeeResponseDTO updateEmployee(Long id, UpdateEmployeeRequestDTO request) {
+        log.info("Updating employee with id: {} using request: {}", id, request);
         // Find employee by id
         Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.error("Update employee is failed because employee not found with id: {}", id);
+                    return new ResourceNotFoundException("Employee not found with id: " + id);
+                });
 
         // Find department by id
         Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
+                .orElseThrow(() -> {
+                    log.error("Update employee is failed because department not found with id: {}", request.getDepartmentId());
+                    return new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId());
+                });
 
         // Check email exists (exclude current employee)
         if (employeeRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
+            log.error("Update employee is failed because email already exists: {}", request.getEmail());
             throw new DuplicateResourceException("Email already exists: " + request.getEmail());
         }
 
@@ -95,6 +111,7 @@ public class EmployeeService {
         existingEmployee.setDepartment(department);
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        log.info("Employee updated successfully: {}", updatedEmployee);
 
         return convertToResponseDTO(updatedEmployee);
     }
@@ -102,10 +119,15 @@ public class EmployeeService {
     // Delete employee
     @Transactional
     public void deleteEmployee(Long id) {
+        log.warn("Deleting employee with id: {}", id);
         // Find employee by id
         Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.error("Delete employee is failed because employee not found with id: {}", id);
+                    return new ResourceNotFoundException("Employee not found with id: " + id);
+                });
 
         employeeRepository.delete(existingEmployee);
+        log.info("Employee deleted successfully with id: {}", id);
     }
 }

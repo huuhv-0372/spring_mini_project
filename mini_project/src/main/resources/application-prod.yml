@@ -1,0 +1,17 @@
+server:
+  port: 80 # Đổi port về 80 (chuẩn web) thay vì 8080
+
+spring:
+  datasource:
+    # URL này sẽ trỏ tới Database trên mây (VD: AWS RDS)
+    url: jdbc:mysql://database-1.cluster-xxx.ap-southeast-1.rds.amazonaws.com:3306/prod_db
+    username: admin_prod
+    password: super_secret_password_123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+# Tùy chỉnh Log cho môi trường Prod (Ghi ra file để lưu trữ)
+logging:
+  level:
+    root: WARN # Chỉ in log cảnh báo và lỗi, ẩn hết log INFO rác
+    com.huuhv.mini_project: INFO
+  file:
+    name: logs/mini-project-prod.log # Ghi log ra file cứng
