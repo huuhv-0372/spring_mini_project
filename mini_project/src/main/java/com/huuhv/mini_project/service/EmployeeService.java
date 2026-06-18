@@ -11,6 +11,7 @@ import com.huuhv.mini_project.repository.DepartmentRepository;
 import com.huuhv.mini_project.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +78,7 @@ public class EmployeeService {
 
         // Save employee to database
         Employee newEmployee = employeeRepository.save(employee);
-        log.info("New employee added successfully: {}", newEmployee);
+        log.info("New employee added successfully with ID: {}", newEmployee.getId());
 
         return convertToResponseDTO(newEmployee);
     }
@@ -111,7 +112,7 @@ public class EmployeeService {
         existingEmployee.setDepartment(department);
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
-        log.info("Employee updated successfully: {}", updatedEmployee);
+        log.info("Employee updated successfully with ID: {}", updatedEmployee.getId());
 
         return convertToResponseDTO(updatedEmployee);
     }
@@ -129,5 +130,14 @@ public class EmployeeService {
 
         employeeRepository.delete(existingEmployee);
         log.info("Employee deleted successfully with id: {}", id);
+    }
+
+    // Cache result of employee count
+    @Cacheable("employeeCount")
+    @Transactional(readOnly = true)
+    public long getEmployeeCount() {
+        log.info("Getting employee count...");
+
+        return employeeRepository.count();
     }
 }

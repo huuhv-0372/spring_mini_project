@@ -39,7 +39,7 @@ public class DepartmentService {
                 .toList();
     }
 
-    // Get a department by Id
+    // Get a department by ID
     @Transactional(readOnly = true)
     public DepartmentResponseDTO getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
@@ -63,11 +63,11 @@ public class DepartmentService {
                 .name(request.getName())
                 .build();
         Department savedDepartment = departmentRepository.save(department);
-        log.info("Department added successfully: {}", savedDepartment);
+        log.info("Department added successfully with ID: {}", savedDepartment.getId());
         return convertToResponseDTO(savedDepartment);
     }
 
-    // Update department by Id
+    // Update department by ID
     @Transactional
     public DepartmentResponseDTO updateDepartment(Long id, DepartmentRequestDTO request) {
         log.info("Updating department with id {}: {}", id, request);
@@ -84,11 +84,11 @@ public class DepartmentService {
 
         department.setName(request.getName());
         Department updatedDepartment = departmentRepository.save(department);
-        log.info("Department updated successfully: {}", updatedDepartment);
+        log.info("Department updated successfully with ID: {}", updatedDepartment.getId());
         return convertToResponseDTO(updatedDepartment);
     }
 
-    // Delete department by Id
+    // Delete department by ID
     @Transactional
     public void deleteDepartment(Long id) {
         log.warn("Deleting department with id: {}", id);
@@ -98,6 +98,6 @@ public class DepartmentService {
                     return new ResourceNotFoundException("Department not found with id: " + id);
                 });
         departmentRepository.delete(department);
-        log.info("Department deleted successfully: {}", department);
+        log.info("Department deleted successfully with Id: {}", department.getId());
     }
 }

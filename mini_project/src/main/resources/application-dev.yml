@@ -4,16 +4,25 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update # Tự động tạo/sửa bảng khi code thay đổi
-    show-sql: true # In câu lệnh SQL ra màn hình để dễ debug
-    properties:
-      hibernate:
-        format_sql: true
+#  jpa:
+#    hibernate:
+#      ddl-auto: update # Tự động tạo/sửa bảng khi code thay đổi
+#    show-sql: true # In câu lệnh SQL ra màn hình để dễ debug
+#    properties:
+#      hibernate:
+#        format_sql: true
 
 # Tùy chỉnh Log cho môi trường Dev (In ra màn hình console)
 logging:
   level:
     root: INFO
     com.huuhv.mini_project: DEBUG # Hiện chi tiết log code của mình
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches # Mở các endpoint cần thiết
+  endpoint:
+    health:
+      show-details: always # Hiển thị chi tiết tình trạng Database, Disk...

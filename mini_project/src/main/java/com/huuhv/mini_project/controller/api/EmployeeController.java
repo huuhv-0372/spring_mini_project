@@ -80,4 +80,11 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/report/count")
+    public ResponseEntity<String> getEmployeeReportCount() {
+        long total = employeeService.getEmployeeCount();
+
+        return ResponseEntity.ok("Total current employees are: " + total);
+    }
 }
