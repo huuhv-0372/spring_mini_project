@@ -4,7 +4,6 @@ import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.entity.Employee;
 import com.huuhv.mini_project.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

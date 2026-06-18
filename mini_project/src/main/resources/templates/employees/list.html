@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Danh sách Nhân viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div th:replace="~{fragments/header :: navbar}"></div>
 <div class="container mt-5">
     <h2>Hệ thống Quản lý Nhân viên</h2>
     <hr>
 
     <div class="d-flex justify-content-between mb-3">
-        <a th:href="@{/employees/add}" class="btn btn-success">+ Thêm nhân viên</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/employees/add}" class="btn btn-success">Thêm mới nhân viên</a>
 
         <form th:action="@{/employees/list}" method="get" class="d-flex">
             <input type="text" name="keyword" th:value="${keyword}" class="form-control me-2" placeholder="Tìm tên, phòng ban...">
@@ -27,7 +29,7 @@
             <th>Tên nhân viên</th>
             <th>Email</th>
             <th>Phòng ban</th>
-            <th>Hành động</th>
+            <th sec:authorize="hasRole('ADMIN')">Hành động</th>
         </tr>
         </thead>
         <tbody>
@@ -36,7 +38,7 @@
             <td th:text="${emp.name}">${emp.name}</td>
             <td th:text="${emp.email}">${emp.email}</td>
             <td th:text="${emp.departmentName}">${emp.departmentName}</td>
-            <td>
+            <td sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/employees/edit/{id}(id=${emp.id})}" class="btn btn-sm btn-warning">Sửa</a>
 
                 <a th:href="@{/employees/delete/{id}(id=${emp.id})}"
@@ -50,5 +52,6 @@
         </tbody>
     </table>
 </div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
