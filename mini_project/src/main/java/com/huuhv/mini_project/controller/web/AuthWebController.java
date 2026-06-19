@@ -1,9 +1,8 @@
 package com.huuhv.mini_project.controller.web;
 
-import com.huuhv.mini_project.entity.User;
-import com.huuhv.mini_project.repository.UserRepository;
+import com.huuhv.mini_project.exception.DuplicateResourceException;
+import com.huuhv.mini_project.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class AuthWebController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @GetMapping("/login")
     public String login() {
@@ -31,24 +29,18 @@ public class AuthWebController {
     public String processRegister(@RequestParam String username,
                                   @RequestParam String password,
                                   @RequestParam String role,
+                                  @RequestParam String email,
                                   Model model) {
-
-        // 1. Kiểm tra username đã tồn tại chưa
-        if (userRepository.existsByUsername(username)) {
-            model.addAttribute("errorMsg", "Tên đăng nhập đã tồn tại!");
-            return "auth/register"; // Trả lại trang đăng ký kèm lỗi
+        try {
+            model.addAttribute("oldUsername", username);
+            model.addAttribute("oldEmail", email);
+            model.addAttribute("oldRole", role);
+            userService.addUser(username, email, password, role);
+            model.addAttribute("successMsg", "Đăng ký thành công!");
+        } catch (DuplicateResourceException e) {
+            model.addAttribute("errorMsg", e.getMessage());
+            return "auth/register";
         }
-
-        // 2. Tạo User mới và băm mật khẩu
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setRole(role);
-
-        userRepository.save(newUser);
-
-        // 3. Báo thành công (có thể redirect thẳng về trang login)
-        model.addAttribute("successMsg", "Đăng ký thành công! Vui lòng đăng nhập.");
         return "auth/register";
     }
 }

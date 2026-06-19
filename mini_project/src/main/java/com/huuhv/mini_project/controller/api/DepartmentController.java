@@ -4,8 +4,6 @@ import com.huuhv.mini_project.dto.request.DepartmentRequestDTO;
 import com.huuhv.mini_project.dto.response.DepartmentResponseDTO;
 import com.huuhv.mini_project.service.DepartmentService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

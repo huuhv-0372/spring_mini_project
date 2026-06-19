@@ -28,8 +28,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String role;
+    public enum Role { ROLE_USER, ROLE_ADMIN }
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @CreationTimestamp
     @Column(name = "created_at")

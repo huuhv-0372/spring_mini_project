@@ -18,20 +18,25 @@
 
         <form th:action="@{/register}" method="post">
             <div class="mb-3">
-                <label for="username" class="form-label fw-bold">Tài khoản</label>
-                <input type="text" class="form-control" id="username" name="username" required placeholder="Chọn tên đăng nhập">
+                <label for="username" class="form-label fw-bold">Tài khoản (*)</label>
+                <input type="text" class="form-control" id="username" name="username" required placeholder="Chọn tên đăng nhập" th:value="${oldUsername}">
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label fw-bold">Mật khẩu</label>
+                <label for="email" class="form-label fw-bold">Email (*)</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="Nhập địa chỉ email của bạn" th:value="${oldEmail}">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label fw-bold">Mật khẩu (*)</label>
                 <input type="password" class="form-control" id="password" name="password" required placeholder="Nhập mật khẩu">
             </div>
 
             <div class="mb-4">
                 <label for="role" class="form-label fw-bold">Quyền hạn (Demo)</label>
                 <select class="form-select" id="role" name="role">
-                    <option value="ROLE_USER">Nhân viên (Chỉ xem)</option>
-                    <option value="ROLE_ADMIN">Quản trị viên (Toàn quyền)</option>
+                    <option value="ROLE_USER" th:selected="${oldRole == 'ROLE_USER'}">Nhân viên (Chỉ xem)</option>
+                    <option value="ROLE_ADMIN" th:selected="${oldRole == 'ROLE_ADMIN'}">Quản trị viên (Toàn quyền)</option>
                 </select>
             </div>
 

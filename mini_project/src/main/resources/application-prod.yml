@@ -3,10 +3,9 @@ server:
 
 spring:
   datasource:
-    # URL này sẽ trỏ tới Database trên mây (VD: AWS RDS)
-    url: jdbc:mysql://database-1.cluster-xxx.ap-southeast-1.rds.amazonaws.com:3306/prod_db
-    username: admin_prod
-    password: super_secret_password_123!
+    url: ${DB_MINI_PROJECT_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 # Tùy chỉnh Log cho môi trường Prod (Ghi ra file để lưu trữ)
 logging:
@@ -15,3 +14,14 @@ logging:
     com.huuhv.mini_project: INFO
   file:
     name: logs/mini-project-prod.log # Ghi log ra file cứng
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health  # Chỉ expose health cho load balancer
+  endpoint:
+    health:
+      show-details: never  # Không lộ DB info ra ngoài
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:3600000}

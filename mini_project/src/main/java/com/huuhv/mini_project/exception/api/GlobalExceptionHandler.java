@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "com.huuhv.mini_project.controller.api", annotations = RestControllerAdvice.class) // Apply JSON handling to API controllers only
+@RestControllerAdvice(basePackages = "com.huuhv.mini_project.controller.api") // Apply JSON handling to API controllers only
 public class GlobalExceptionHandler {
     // Handle 404 Not found
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -58,6 +59,18 @@ public class GlobalExceptionHandler {
             .build();
         log.error("Resource conflict: {}", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    // Handle 401
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+            .message(ex.getMessage())
+            .build();
+        log.error("Unauthorized access: {}", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     // Handle other exceptions (500 Internal Server Error)

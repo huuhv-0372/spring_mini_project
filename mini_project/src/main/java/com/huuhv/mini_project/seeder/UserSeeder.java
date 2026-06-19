@@ -25,9 +25,9 @@ public class UserSeeder implements CommandLineRunner {
             System.out.println("Seeding user data...");
             userRepository.saveAll
                     (List.of(
-                            new User(null, "admin", passwordEncoder.encode("123456"), "admin@gmail.com", "ROLE_ADMIN", null, null),
-                            new User(null, "user", passwordEncoder.encode("123456"), "user@gmail.com", "ROLE_USER", null, null),
-                            new User(null, "huuhv", passwordEncoder.encode("123456"), "huuhv@gmail.com", "ROLE_USER", null, null)
+                            new User(null, "admin", passwordEncoder.encode("123456"), "admin@gmail.com", User.Role.ROLE_ADMIN, null, null),
+                            new User(null, "user", passwordEncoder.encode("123456"), "user@gmail.com", User.Role.ROLE_USER, null, null),
+                            new User(null, "huuhv", passwordEncoder.encode("123456"), "huuhv@gmail.com", User.Role.ROLE_USER, null, null)
                     ));
             System.out.println("User has been created, total is: " + userRepository.count());
         }

@@ -1,6 +1,8 @@
 package com.huuhv.mini_project.repository;
 
 import com.huuhv.mini_project.entity.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "WHERE LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(d.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Employee> searchByNameOrDepartment(@Param("keyword") String keyword);
+
+    @Query("SELECT e FROM Employee e JOIN e.department d " +
+            "WHERE LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(d.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Employee> searchByNameOrDepartmentPaging(@Param("keyword") String keyword, Pageable pageable);
 
     boolean existsByEmail(String email);
     boolean existsByEmailAndIdNot(String email, Long id);

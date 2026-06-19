@@ -2,6 +2,7 @@ package com.huuhv.mini_project.service;
 
 import com.huuhv.mini_project.dto.request.CreateEmployeeRequestDTO;
 import com.huuhv.mini_project.dto.request.UpdateEmployeeRequestDTO;
+import com.huuhv.mini_project.dto.response.DepartmentStatsDTO;
 import com.huuhv.mini_project.dto.response.EmployeeResponseDTO;
 import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.entity.Employee;
@@ -12,6 +13,9 @@ import com.huuhv.mini_project.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -139,5 +143,36 @@ public class EmployeeService {
         log.info("Getting employee count...");
 
         return employeeRepository.count();
+    }
+
+    // Hàm lấy danh sách thống kê
+    @Transactional(readOnly = true)
+    public List<DepartmentStatsDTO> getEmployeeStatsByDept() {
+        return departmentRepository.getEmployeeCountByDepartment();
+    }
+
+    // === HÀM TÌM KIẾM CÓ PHÂN TRANG ===
+    @Transactional(readOnly = true)
+    public Page<EmployeeResponseDTO> searchEmployeesPaginated(String keyword, int pageNo, int pageSize) {
+
+        // PageRequest.of nhận vào index (bắt đầu từ 0)
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Employee> employeePage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            employeePage = employeeRepository.findAll(pageable);
+        } else {
+            employeePage = employeeRepository.searchByNameOrDepartmentPaging(keyword.trim(), pageable);
+        }
+
+        // Đối tượng Page của Spring có sẵn hàm map() để chuyển đổi từ Entity sang DTO cực kỳ tiện lợi
+        return employeePage.map(this::convertToResponseDTO);
+    }
+
+    // Get employee by id
+    @Transactional(readOnly = true)
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
     }
 }

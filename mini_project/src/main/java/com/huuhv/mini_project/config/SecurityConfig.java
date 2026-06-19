@@ -26,7 +26,9 @@ public class SecurityConfig {
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/**")
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/api/**")
+                )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                     // Cho phép truy cập vào các endpoint /api/v1/auth/** mà không cần xác thực
@@ -53,7 +55,9 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/api/**")
+                )
                 .authorizeHttpRequests(auth -> auth
                     // Cho phép truy cập vào trang login và tài nguyên tĩnh
                     .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()

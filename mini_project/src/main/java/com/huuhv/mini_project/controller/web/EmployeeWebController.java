@@ -2,14 +2,14 @@ package com.huuhv.mini_project.controller.web;
 
 import com.huuhv.mini_project.dto.request.CreateEmployeeRequestDTO;
 import com.huuhv.mini_project.dto.request.UpdateEmployeeRequestDTO;
+import com.huuhv.mini_project.dto.response.DepartmentStatsDTO;
 import com.huuhv.mini_project.dto.response.EmployeeResponseDTO;
 import com.huuhv.mini_project.entity.Employee;
-import com.huuhv.mini_project.exception.ResourceNotFoundException;
-import com.huuhv.mini_project.repository.EmployeeRepository;
 import com.huuhv.mini_project.service.DepartmentService;
 import com.huuhv.mini_project.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,14 +24,24 @@ public class EmployeeWebController {
 
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
-    private final EmployeeRepository employeeRepository;
 
     // List employees and search
     @GetMapping("/list")
-    public String listEmployees(@RequestParam(required = false) String keyword, Model model) {
-        List<EmployeeResponseDTO> employees = employeeService.searchEmployees(keyword);
-        model.addAttribute("employees", employees);
-        model.addAttribute("keyword", keyword);
+    public String listEmployees(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page, // Mặc định là trang 1
+            @RequestParam(defaultValue = "9") int size, // Mặc định hiển thị 5 nhân viên/trang
+            Model model) {
+
+        // Gọi Service lấy dữ liệu phân trang
+        Page<EmployeeResponseDTO> pageData = employeeService.searchEmployeesPaginated(keyword, page, size);
+
+        // Đẩy dữ liệu ra Model cho Thymeleaf vẽ
+        model.addAttribute("employees", pageData.getContent()); // Danh sách hiển thị
+        model.addAttribute("currentPage", page);                // Trang hiện tại
+        model.addAttribute("totalPages", pageData.getTotalPages()); // Tổng số trang
+        model.addAttribute("totalItems", pageData.getTotalElements()); // Tổng số nhân viên
+        model.addAttribute("keyword", keyword); // Giữ lại keyword trên thanh tìm kiếm
 
         return "employees/list";
     }
@@ -66,9 +76,7 @@ public class EmployeeWebController {
     @GetMapping("/edit/{id}")
     public String showEditEmployeeForm(@PathVariable Long id, Model model) {
         // Get data employee from DB
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
-
+        Employee employee = employeeService.getEmployeeById(id);
         // Fill old data to DTO for display form
         UpdateEmployeeRequestDTO employeeRequestDTO = new UpdateEmployeeRequestDTO();
         employeeRequestDTO.setName(employee.getName());
@@ -105,9 +113,25 @@ public class EmployeeWebController {
     }
 
     // Delete employee
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/employees/list";
+    }
+
+    // TRANG THỐNG KÊ (Dùng chung cho cả Admin và User nếu bạn muốn)
+    @GetMapping("/statistics")
+    public String showStatistics(Model model) {
+        // Lấy tổng số
+        long totalEmployees = employeeService.getEmployeeCount();
+
+        // Lấy thống kê từng phòng ban
+        List<DepartmentStatsDTO> stats = employeeService.getEmployeeStatsByDept();
+
+        // Đẩy ra View
+        model.addAttribute("totalEmployees", totalEmployees);
+        model.addAttribute("stats", stats);
+
+        return "employees/statistics";
     }
 }

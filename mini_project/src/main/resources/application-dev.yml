@@ -28,4 +28,4 @@ management:
       show-details: always # Hiển thị chi tiết tình trạng Database, Disk...
 jwt:
   secret: "mySecretKey1234567890ABCDEFGHIJabcdefghij"  # >= 32 chars
-  expiration: 3600000 # 1 giờ
+  expiration: 3600000 # 1 hour
