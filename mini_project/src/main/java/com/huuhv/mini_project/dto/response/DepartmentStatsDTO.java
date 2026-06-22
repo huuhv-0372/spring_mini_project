@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor // BẮT BUỘC CÓ để dùng trong câu lệnh JPQL
+@AllArgsConstructor // REQUIRED: needed for JPQL constructor expression
 public class DepartmentStatsDTO {
     private String departmentName;
     private Long employeeCount;

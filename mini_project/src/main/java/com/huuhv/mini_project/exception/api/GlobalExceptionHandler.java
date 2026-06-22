@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = ErrorResponse.builder()
             .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
             .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-            .message(ex.getMessage())
+            .message("An unexpected error occurred")
             .path(request.getRequestURI())
             .build();
         log.error("Unhandled exception occurred at {}: {}", request.getRequestURI(), ex.getMessage(), ex);

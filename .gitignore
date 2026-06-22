@@ -1,1 +1,3 @@
-mini_project/src/main/resources/application.properties
+.idea/*
+*/.idea/*
+*.idea/*

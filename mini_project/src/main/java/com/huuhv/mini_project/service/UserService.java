@@ -54,7 +54,7 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password)); // Password should be encoded before saving
-        user.setRole(User.Role.valueOf(role));
+        user.setRole(User.Role.valueOf(role.toUpperCase())); // Convert role string to enum
 
         userRepository.save(user);
         log.info("User added successfully with username: {}", username);

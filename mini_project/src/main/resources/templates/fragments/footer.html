@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<footer th:fragment="footer" class="bg-dark text-light py-4 mt-5">
+<footer xmlns:th="http://www.thymeleaf.org" th:fragment="footer" class="bg-dark text-light py-4 mt-5">
     <div class="container">
         <div class="row">
             <div class="col-md-6 mb-3 mb-md-0">
@@ -16,11 +13,11 @@
                 <h5 class="text-uppercase text-info fw-bold">Liên kết</h5>
                 <ul class="list-unstyled mb-0">
                     <li><a th:href="@{/employees/list}" class="text-secondary text-decoration-none text-hover-white">Danh sách nhân viên</a></li>
+                    <!-- TODO:
                     <li><a th:href="@{/departments}" class="text-secondary text-decoration-none text-hover-white">Danh mục phòng ban</a></li>
+                    -->
                 </ul>
             </div>
         </div>
     </div>
 </footer>
-
-</html>

@@ -24,25 +24,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        try {
-            String header = request.getHeader("Authorization");
-            if (header != null && header.startsWith("Bearer ")) {
-                String token = header.substring(7);
-                // Cần có hàm extractUsername trong JwtUtil của bạn
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+
+            try {
+                // Requires the extractUsername method in JwtUtil
                 String username = jwtUtil.extractUsername(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    // Cần có hàm validateToken trong JwtUtil
+                    // Requires the validateToken method in JwtUtil
                     if (jwtUtil.validateToken(token)) {
                         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(auth);
                     }
                 }
+            } catch (Exception ex) {
+                log.debug("Invalid JWT token: {}", ex.getMessage());
             }
-        } catch (Exception e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
+
         }
         filterChain.doFilter(request, response);
     }
