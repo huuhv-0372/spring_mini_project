@@ -4,13 +4,11 @@ import com.huuhv.mini_project.dto.request.LoginRequestDTO;
 import com.huuhv.mini_project.dto.request.RegisterRequestDTO;
 import com.huuhv.mini_project.dto.response.LoginResponseDTO;
 import com.huuhv.mini_project.dto.response.UserResponseDTO;
-import com.huuhv.mini_project.security.JwtUtil;
 import com.huuhv.mini_project.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +24,14 @@ public class AuthController {
     // API register
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request) {
-        UserResponseDTO newUser = userService.addUser(request.getUsername(), request.getEmail(), request.getPassword(), request.getRole());
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Confirm password does not match password");
+        }
+        UserResponseDTO newUser = userService.addUser(request.getUsername(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getRole());
 
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }

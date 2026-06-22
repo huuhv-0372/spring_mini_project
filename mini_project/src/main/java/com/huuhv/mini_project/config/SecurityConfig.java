@@ -20,37 +20,35 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
 
-    // Thread for API (use JWT, no session)
+    // Security filter chain for API (uses JWT, no session)
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**")
+                .securityMatcher("/api/**", "/actuator/**") // Apply this filter chain to API and actuator endpoints
                 .csrf(csrf -> csrf
                     .ignoringRequestMatchers("/api/**")
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                    // Cho phép truy cập vào các endpoint /api/v1/auth/** mà không cần xác thực
+                    // Allow unauthenticated access to /api/v1/auth/** endpoints
                     .requestMatchers("/api/v1/auth/**").permitAll()
 
-                    // Phân quyền API: USER xem, ADMIN thao tác CRUD
+                    // API authorization: USER can view, ADMIN can perform CRUD operations
                     .requestMatchers(HttpMethod.GET, "/api/v1/employees/**").hasAnyRole("USER", "ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/v1/departments/**").hasAnyRole("USER", "ADMIN")
                     .requestMatchers("/api/v1/employees/**").hasRole("ADMIN") // POST, PUT, DELETE
                     .requestMatchers("/api/v1/departments/**").hasRole("ADMIN") // POST, PUT, DELETE
 
-                    .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-
-                    // Yêu cầu xác thực cho tất cả các endpoint khác
+                    // Require authentication for all other endpoints
                     .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // Thread for Web MVC (use Form login, Session, Thymeleaf)
+    // Security filter chain for Web MVC (uses form login, session, Thymeleaf)
     @Bean
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
@@ -59,24 +57,24 @@ public class SecurityConfig {
                     .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(auth -> auth
-                    // Cho phép truy cập vào trang login và tài nguyên tĩnh
+                    // Allow access to the login page and static resources
                     .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
 
-                    // Chỉ cho phép ADMIN truy cập các endpoint này
+                    // Only allow ADMIN to access these endpoints
                     .requestMatchers("/employees/add", "/employees/edit/**", "/employees/delete/**").hasRole("ADMIN")
-                        // USER vs ADMIN truy cập được các endpoint này
+                        // Both USER and ADMIN can access these endpoints
                         .requestMatchers("/employees", "/employees/list").hasAnyRole("ADMIN", "USER")
 
-                    .anyRequest().authenticated() // Yêu cầu xác thực cho tất cả các endpoint khác
+                    .anyRequest().authenticated() // Require authentication for all other endpoints
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Trang login tùy chỉnh
-                        .defaultSuccessUrl("/employees/list", true) // Trang chuyển hướng sau khi đăng nhập thành công
+                        .loginPage("/login") // Custom login page
+                        .defaultSuccessUrl("/employees/list", true) // Redirect URL after successful login
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // URL để đăng xuất
-                        .logoutSuccessUrl("/login?logout") // Trang chuyển hướng sau khi đăng xuất thành công
+                        .logoutUrl("/logout") // URL to trigger logout
+                        .logoutSuccessUrl("/login?logout") // Redirect URL after successful logout
                         .permitAll()
                 );
 

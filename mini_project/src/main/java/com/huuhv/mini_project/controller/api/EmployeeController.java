@@ -34,22 +34,22 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    // API for test inject Bean into Controller
+    // API for testing Bean injection into Controller
     @GetMapping("/test-ioc")
     public String testIoC() {
-        // Sử dụng Bean utilityService để sinh mã nhân viên
+        // Use utilityService bean to generate employee code
         String employeeCode = utilityService.generateEmployeeCode(1L);
         System.out.println("Employee code: " + employeeCode);
 
-        // Sử dụng Bean modelMapper để map 1 đối tượng sang 1 đối tượng khác (ở đây chỉ là ví dụ, không có class cụ thể)
-        String mapperHash = modelMapper.toString(); // Chỉ để kiểm tra xem Bean modelMapper có được inject thành công hay không
+        // Use modelMapper bean to map one object to another (example only, no specific class)
+        String mapperHash = modelMapper.toString(); // Just to verify the modelMapper bean was injected successfully
         System.out.println("ModelMapper Bean: " + mapperHash);
 
-        // Sử dụng Bean passwordEncoder để mã hóa một mật khẩu (ở đây chỉ là ví dụ, không có class cụ thể)
+        // Use passwordEncoder bean to encode a password (example only)
         String password = passwordEncoder.encode("123456");
         System.out.println("Password: " + password);
 
-        return "IoC Container đã inject thành công các Bean vào Controller rồi nhé! Hãy kiểm tra console để xem kết quả.";
+        return "IoC Container has successfully injected all Beans into the Controller! Check the console for results.";
     }
 
     // Get all employees

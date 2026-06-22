@@ -1,5 +1,5 @@
 -- Create employees table with a foreign key to departments
-CREATE TABLE IF NOT EXISTS employees (
+CREATE TABLE employees (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,

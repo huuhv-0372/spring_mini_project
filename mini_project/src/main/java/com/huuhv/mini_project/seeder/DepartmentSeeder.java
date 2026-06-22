@@ -17,7 +17,7 @@ public class DepartmentSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (departmentRepository.count() == 0) {
-            // Seed 5 data for departments table by repository via saveAll
+            // Seed initial data for the departments table
             departmentRepository.saveAll(
                     java.util.List.of(
                             Department.builder().name("Human Resources").build(),

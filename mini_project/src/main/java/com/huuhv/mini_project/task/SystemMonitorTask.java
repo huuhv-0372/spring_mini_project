@@ -9,17 +9,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SystemMonitorTask {
 
-    // fixedRate = 30000: Chạy lặp lại chính xác mỗi 30 giây (30.000 ms)
+    // fixedRate = 30000: Runs exactly every 30 seconds (30,000 ms)
     @Scheduled(fixedRate = 30000)
     public void monitorSystem() {
-        // Ghi log thông tin hệ thống
-        log.info("=== System running: The system is still operating stably. ===");
-        // Thêm logic giám sát hệ thống ở đây (ví dụ: kiểm tra CPU, bộ nhớ, ổ đĩa, v.v.)
+        // Log system information
+        log.debug("=== System running: The system is still operating stably. ===");
+        // Add system monitoring logic here (e.g., check CPU, memory, disk, etc.)
     }
 
     @Scheduled(fixedRate = 60000)
-    @CacheEvict(value = "employeeCount", allEntries = true) // Clear memory of employeeCount
+    @CacheEvict(value = "employeeCount", allEntries = true) // Clear employeeCount cache
     public void clearEmployeeCountCache() {
-        log.info("=== Clearing employee count cache after 1 minute. ===");
+        log.debug("=== Clearing employee count cache after 1 minute. ===");
     }
 }

@@ -19,16 +19,16 @@ public class EmployeeSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (employeeRepository.count() == 0) {
-            // Seed data for employees table via saveAll.
+            // Seed initial data for the employees table
             System.out.println("Seeding employee data...");
             employeeRepository.saveAll(
                 java.util.List.of(
-                    Employee.builder().name("Alice").email("alice@example.com").department(departmentRef(1L)).build(),
-                    Employee.builder().name("Bob").email("bob@example.com").department(departmentRef(2L)).build(),
-                    Employee.builder().name("Charlie").email("Charlie@example.com").department(departmentRef(3L)).build(),
-                    Employee.builder().name("Trump").email("Trump@example.com").department(departmentRef(4L)).build(),
-                    Employee.builder().name("Elon Musk").email("Elon_Musk@example.com").department(departmentRef(5L)).build(),
-                    Employee.builder().name("HuuHV").email("huuhv@example.com").department(departmentRef(6L)).build()
+                    new Employee(null, "Alice", "alice@example.com", null, null, departmentRef(1L)),
+                    new Employee(null, "Bob", "bob@example.com", null, null, departmentRef(2L)),
+                    new Employee(null, "Charlie", "Charlie@example.com", null, null, departmentRef(3L)),
+                    new Employee(null, "Trump", "Trump@example.com", null, null, departmentRef(4L)),
+                    new Employee(null, "Elon Musk", "Elon_Musk@example.com", null, null, departmentRef(5L)),
+                    new Employee(null, "HuuHV", "huuhv@example.com", null, null, departmentRef(6L))
                 )
             );
             System.out.println("Employee has been created, total is: " + employeeRepository.count());

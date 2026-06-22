@@ -145,17 +145,20 @@ public class EmployeeService {
         return employeeRepository.count();
     }
 
-    // Hàm lấy danh sách thống kê
-    @Transactional(readOnly = true)
+    // Get total employee count for the company
+    public long getTotalEmployeesCount() {
+        return employeeRepository.count();
+    }
+
+    // Get employee statistics by department
     public List<DepartmentStatsDTO> getEmployeeStatsByDept() {
         return departmentRepository.getEmployeeCountByDepartment();
     }
 
-    // === HÀM TÌM KIẾM CÓ PHÂN TRANG ===
-    @Transactional(readOnly = true)
+    // === PAGINATED SEARCH ===
     public Page<EmployeeResponseDTO> searchEmployeesPaginated(String keyword, int pageNo, int pageSize) {
 
-        // PageRequest.of nhận vào index (bắt đầu từ 0)
+        // PageRequest.of takes a 0-based page index
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<Employee> employeePage;
 
@@ -165,7 +168,7 @@ public class EmployeeService {
             employeePage = employeeRepository.searchByNameOrDepartmentPaging(keyword.trim(), pageable);
         }
 
-        // Đối tượng Page của Spring có sẵn hàm map() để chuyển đổi từ Entity sang DTO cực kỳ tiện lợi
+        // Spring's Page object provides a map() method to conveniently convert Entity to DTO
         return employeePage.map(this::convertToResponseDTO);
     }
 
