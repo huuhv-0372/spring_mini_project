@@ -4,10 +4,12 @@ import com.huuhv.mini_project.entity.Department;
 import com.huuhv.mini_project.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
 @Order(10)
 public class DepartmentSeeder implements CommandLineRunner {
@@ -17,7 +19,7 @@ public class DepartmentSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (departmentRepository.count() == 0) {
-            // Seed 5 data for departments table by repository via saveAll
+            // Seed initial data for the departments table
             departmentRepository.saveAll(
                     java.util.List.of(
                             Department.builder().name("Human Resources").build(),

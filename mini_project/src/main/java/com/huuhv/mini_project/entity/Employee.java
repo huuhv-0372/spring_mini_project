@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Table(name = "employees")
 @Getter
 @Setter
-@Builder // Cho phép khởi tạo object kiểu chain siêu mượt
-@NoArgsConstructor // Hàm khởi tạo rỗng
-@AllArgsConstructor // Hàm khởi tạo full tham số
+@Builder // Enables fluent builder-style object construction
+@NoArgsConstructor // No-argument constructor
+@AllArgsConstructor // All-arguments constructor
 public class Employee {
 
     @Id

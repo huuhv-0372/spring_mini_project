@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body">
                     <form th:action="@{/employees/edit/{id}(id=${employeeId})}" th:object="${employee}" method="post">
-
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div class="mb-3">
                             <label class="form-label">Tên nhân viên (*)</label>
                             <input type="text" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">

@@ -2,15 +2,15 @@ package com.huuhv.mini_project.service;
 
 import org.springframework.stereotype.Service;
 
-@Service // Báo cho Spring biết: "Hãy đưa class này vào IoC Container làm Bean nhé!"
+@Service // Tells Spring to register this class as a Bean in the IoC Container
 public class UtilityService {
-    // Hàm sinh mã nhân viên tự động (VD: truyền vào số 1 -> Trả về EM-00005
+    // Generates an employee code automatically (e.g., input 1 -> returns EM-00001)
     public String generateEmployeeCode(Long id) {
         if (id == null) {
             return null;
         }
 
-        // Format số thành 5 chữ số, nếu số có ít hơn 5 chữ số thì sẽ được thêm số 0 vào trước
+        // Format the number as 5 digits, padding with leading zeros if necessary
         return String.format("EM-%05d", id);
     }
 }

@@ -1,27 +1,20 @@
 server:
-  port: 80 # Đổi port về 80 (chuẩn web) thay vì 8080
+  port: 80 # Switch to port 80 (standard web port) instead of 8080
 
 spring:
   datasource:
+    # This URL points to a cloud database (e.g., AWS RDS)
     url: ${DB_MINI_PROJECT_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-# Tùy chỉnh Log cho môi trường Prod (Ghi ra file để lưu trữ)
+# Customize logging for Prod environment (write to file for storage)
 logging:
   level:
-    root: WARN # Chỉ in log cảnh báo và lỗi, ẩn hết log INFO rác
+    root: WARN # Only print warnings and errors, suppress INFO logs
     com.huuhv.mini_project: INFO
   file:
-    name: logs/mini-project-prod.log # Ghi log ra file cứng
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health  # Chỉ expose health cho load balancer
-  endpoint:
-    health:
-      show-details: never  # Không lộ DB info ra ngoài
+    name: logs/mini-project-prod.log # Write logs to a file
 jwt:
-  secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION:3600000}
+  secret: ${JWT_SECRET}  # >= 32 chars
+  expiration: 3600000 # 1 hour

@@ -33,7 +33,7 @@ public class WebExceptionHandler {
     public ModelAndView handleAnyException(Exception ex, HttpServletRequest request, HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         log.error("An unexpected error occurred: {}", ex.getMessage(), ex);
-        return buildErrorView("error/500", "An unexpected error occurred", ex.getMessage(), request.getRequestURI());
+        return buildErrorView("error/500", "An unexpected error occurred", "Please try again later.", request.getRequestURI());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
