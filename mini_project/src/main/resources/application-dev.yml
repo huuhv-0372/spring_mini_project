@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: ${DB_MINI_PROJECT_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update # Automatically create/update tables when code changes
+#    show-sql: true # Print SQL queries to console for easy debugging
+#    properties:
+#      hibernate:
+#        format_sql: true
+
+# Customize logging for Dev environment (console output)
+logging:
+  level:
+    root: INFO
+    com.huuhv.mini_project: DEBUG # Show detailed logs for application code
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,caches # Expose necessary endpoints
+  endpoint:
+    health:
+      show-details: always # Show health details for Database, Disk, etc.
+jwt:
+  secret: ${JWT_SECRET:mySecretKey1234567890ABCDEFGHIJabcdefghij}  # >= 32 chars
+  expiration: 3600000 # 1 hour

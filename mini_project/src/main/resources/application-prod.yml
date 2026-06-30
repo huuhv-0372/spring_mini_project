@@ -1,0 +1,20 @@
+server:
+  port: 80 # Switch to port 80 (standard web port) instead of 8080
+
+spring:
+  datasource:
+    # This URL points to a cloud database (e.g., AWS RDS)
+    url: ${DB_MINI_PROJECT_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+# Customize logging for Prod environment (write to file for storage)
+logging:
+  level:
+    root: WARN # Only print warnings and errors, suppress INFO logs
+    com.huuhv.mini_project: INFO
+  file:
+    name: logs/mini-project-prod.log # Write logs to a file
+jwt:
+  secret: ${JWT_SECRET}  # >= 32 chars
+  expiration: 3600000 # 1 hour

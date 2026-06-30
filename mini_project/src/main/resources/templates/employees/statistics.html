@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê Nhân viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+<div th:replace="~{fragments/header :: navbar}"></div>
+
+<div class="container mt-4 flex-grow-1">
+    <h2 class="text-primary mb-4">📊 Báo cáo & Thống kê</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card text-white bg-success mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Tổng số nhân viên</h5>
+                    <h1 class="display-4 fw-bold" th:text="${totalEmployees}">0</h1>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white fw-bold">
+                    Chi tiết theo phòng ban
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Phòng ban</th>
+                            <th>Số lượng (Người)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="stat : ${stats}">
+                            <td class="fw-bold" th:text="${stat.departmentName}">IT</td>
+                            <td th:text="${stat.employeeCount}">5</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <h5 class="text-muted mb-4">Biểu đồ phân bổ nhân sự</h5>
+                    <div style="width: 80%; max-width: 400px;">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    // 1. Lấy dữ liệu Java List truyền thẳng vào biến Javascript nhờ th:inline="javascript"
+    const statsData = /*[[${stats}]]*/ [];
+
+    // 2. Tách dữ liệu thành 2 mảng: Tên phòng ban và Số lượng
+    const labels = statsData.map(item => item.departmentName);
+    const data = statsData.map(item => item.employeeCount);
+
+    // 3. Khởi tạo biểu đồ tròn
+    const ctx = document.getElementById('myPieChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut', // Biểu đồ bánh donut (Có thể đổi thành 'pie' hoặc 'bar')
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Số lượng nhân viên',
+                data: data,
+                backgroundColor: [
+                    '#0d6efd', '#198754', '#dc3545', '#ffc107', '#0dcaf0', '#6c757d'
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+</body>
+</html>
